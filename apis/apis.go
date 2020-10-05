@@ -14,5 +14,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 // Test is handler for /test
 func Test(w http.ResponseWriter, r *http.Request) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
-	fmt.Fprintf(w, "protected area. hi %v", claims["user_id"])
+	user := claims["user"].(map[string]interface{})
+
+	fmt.Fprintf(w, "Hi `%v`..! Welcome to your private function.", user["username"])
 }

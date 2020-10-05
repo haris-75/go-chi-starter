@@ -34,8 +34,16 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
-						"body": {},
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\" : \"faizan\",\n\t\"password\" : \"admin\"\n}"
+						},
 						"url": {
 							"raw": "{{host}}/login",
 							"host": [
