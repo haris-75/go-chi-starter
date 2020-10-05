@@ -1,0 +1,98 @@
+{
+	"info": {
+		"name": "go-chi-starter",
+		"_postman_id": "78177953-1e4b-46e9-95a5-f7aa22009187",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"description": "",
+			"item": [
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "668463f4-bd2b-4d69-b333-235584ad1dde",
+								"type": "text/javascript",
+								"exec": [
+									"var token = pm.response.headers.get(\"JWT-Token\");",
+									"",
+									"console.log(pm.response.headers);",
+									"    ",
+									"if (token !== undefined) {",
+									"    console.log(token);",
+									"    pm.environment.set(\"jwt-token\", token);",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Home",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{host}}",
+					"host": [
+						"{{host}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Test",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt-token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/test",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"test"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

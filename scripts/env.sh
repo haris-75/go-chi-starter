@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+PROJECT_NAME=go-chi-starter
+
+OUTPUT_DIRECTORY=./bin
+BINARY=$OUTPUT_DIRECTORY/$PROJECT_NAME
