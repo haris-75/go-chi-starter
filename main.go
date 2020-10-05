@@ -44,11 +44,11 @@ func handleRequests() {
 
 	//Run
 	fmt.Printf("[START]\tStarting server on %v\n", constants.GetAPIAddress())
-	log.Printf("[ERROR]\t%v", http.ListenAndServe(constants.GetHTTPPort(), r))
+	log.Printf("[ERROR]\t%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
 }
 
 func publicRoutes(r chi.Router) {
-	r.Get(constants.HomeAPIRoute, apis.Home)
+	r.Get(constants.HomeAPIRoute, apis.HomeAPI)
 	r.Post(constants.SignInAPIRoute, apis.SignIn)
 }
 
@@ -56,5 +56,6 @@ func protectedRoutes(r chi.Router) {
 	r.Use(jwtauth.Verifier(apis.TokenAuth))
 	r.Use(jwtauth.Authenticator)
 
-	r.Get(constants.TestAPIRoute, apis.Test)
+	r.Get(constants.AdminAPIRoute, apis.AdminAPI)
+	r.Get(constants.UserAPIRoute, apis.UserAPI)
 }

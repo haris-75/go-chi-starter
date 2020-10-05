@@ -1,7 +1,13 @@
 package models
 
-// SignInRequest is request model for /text API
-type SignInRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+type User struct {
+	Name string `json:"name"`
+	Role int64  `json:"role"`
 }
+
+// USER Type
+const (
+	USER_ADMIN = iota
+	USER_NONADMIN
+	USER_NONUSER
+)

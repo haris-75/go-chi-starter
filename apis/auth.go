@@ -16,22 +16,31 @@ func init() {
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
-	var user models.SignInRequest
+	var body models.SignInRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		log.Printf("[ERROR]\t%v", err)
 		http.Error(w, "Unable to parse json.", http.StatusBadRequest)
 		return
 	}
 
-	if isVerified(user) {
-		_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
-		w.Header().Set("JWT-Token", tokenString)
-	} else {
+	user := getUserInfo(body)
+	if user.Role == models.USER_NONUSER {
 		http.Error(w, "inavlid username/password.", http.StatusNotFound)
+		return
 	}
+	_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
+	w.Header().Set("JWT-Token", tokenString)
+	log.Printf("[RUN]\tUser `%v` signed in.\n", user.Name)
 }
 
-func isVerified(user models.SignInRequest) bool {
-	return user.Username == "admin" && user.Password == "admin"
+func getUserInfo(user models.SignInRequest) models.User {
+	switch {
+	case user.Username == "admin" && user.Password == "admin":
+		return models.User{user.Username, models.USER_ADMIN}
+	case user.Username == "faizan" && user.Password == "faizan":
+		return models.User{user.Username, models.USER_NONADMIN}
+	default:
+		return models.User{user.Username, models.USER_NONUSER}
+	}
 }

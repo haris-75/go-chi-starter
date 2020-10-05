@@ -12,8 +12,11 @@ const (
 	// HomeAPIRoute is route for GET /
 	HomeAPIRoute = "/"
 
-	// TestAPIRoute is route for POST /test
-	TestAPIRoute = "/test"
+	// AdminAPIRoute is route for POST /admin
+	AdminAPIRoute = "/admin"
+
+	// UserAPIRoute is route for POST /user
+	UserAPIRoute = "/user"
 
 	// SignInAPIRoute is route for POST /login
 	SignInAPIRoute = "/login"
