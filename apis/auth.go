@@ -2,6 +2,7 @@ package apis
 
 import (
 	"../models"
+	"../constants"
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
@@ -12,7 +13,7 @@ import (
 var TokenAuth *jwtauth.JWTAuth
 
 func init() {
-	TokenAuth = jwtauth.New("HS256", []byte("secret_key_here"), nil)
+	TokenAuth = jwtauth.New("HS256", []byte(constants.SignKey), nil)
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
