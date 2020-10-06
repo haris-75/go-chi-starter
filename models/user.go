@@ -8,6 +8,6 @@ type User struct {
 // USER Type
 const (
 	USER_ADMIN = iota
-	USER_NONADMIN
-	USER_NONUSER
+	USER_REGULAR
+	NONUSER
 )

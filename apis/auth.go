@@ -1,8 +1,8 @@
 package apis
 
 import (
-	"../models"
 	"../constants"
+	"../models"
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
@@ -26,7 +26,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := getUserInfo(body)
-	if user.Role == models.USER_NONUSER {
+	if user.Role == models.NONUSER {
 		http.Error(w, "inavlid username/password.", http.StatusNotFound)
 		return
 	}
@@ -40,8 +40,8 @@ func getUserInfo(user models.SignInRequest) models.User {
 	case user.Username == "admin" && user.Password == "admin":
 		return models.User{user.Username, models.USER_ADMIN}
 	case user.Username == "faizan" && user.Password == "faizan":
-		return models.User{user.Username, models.USER_NONADMIN}
+		return models.User{user.Username, models.USER_REGULAR}
 	default:
-		return models.User{user.Username, models.USER_NONUSER}
+		return models.User{user.Username, models.NONUSER}
 	}
 }

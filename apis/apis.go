@@ -26,7 +26,7 @@ func AdminAPI(w http.ResponseWriter, r *http.Request) {
 // UserAPI is handler for /user
 func UserAPI(w http.ResponseWriter, r *http.Request) {
 	user := getUser(r)
-	if user.Role == models.USER_NONUSER {
+	if user.Role == models.NONUSER {
 		http.Error(w, "Only registered user can access.", http.StatusUnauthorized)
 		return
 	}
@@ -38,7 +38,7 @@ func getUser(r *http.Request) models.User {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	user := claims["user"].(map[string]interface{})
 	if user["name"] == nil || user["role"] == nil {
-		return models.User{"", models.USER_NONUSER}
+		return models.User{"", models.NONUSER}
 	}
 	return models.User{user["name"].(string), int64(user["role"].(float64))}
 }
