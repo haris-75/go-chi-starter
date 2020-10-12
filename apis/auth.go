@@ -3,7 +3,6 @@ package apis
 import (
 	"../constants"
 	"../models"
-	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
 	"log"
@@ -18,12 +17,7 @@ func init() {
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	var body models.SignInRequest
-
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		log.Printf("[ERROR]\t%v", err)
-		http.Error(w, "Unable to parse json.", http.StatusBadRequest)
-		return
-	}
+	parseJSON(r, &body)
 
 	user := getUserInfo(body)
 	if user.Role == models.NONUSER {
