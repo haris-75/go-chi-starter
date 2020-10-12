@@ -9,29 +9,29 @@ import (
 
 // HomeAPI is handler for /
 func HomeAPI(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "API seems fine.")
+	respondJSON(w, http.StatusOK, "API seems fine.")
 }
 
 // AdminAPI is handler for /admin
 func AdminAPI(w http.ResponseWriter, r *http.Request) {
 	user := getUserFromRequest(r)
 	if user.Role != models.USER_ADMIN {
-		http.Error(w, "Only admin can access.", http.StatusUnauthorized)
+		respondError(w, http.StatusUnauthorized, "Only admin can access.")
 		return
 	}
 
-	fmt.Fprintf(w, "Hi `%v`..! Welcome to admin API.", user.Name)
+	respondJSON(w, http.StatusOK, fmt.Sprintf("Hi `%v`..! Welcome to admin API.", user.Name))
 }
 
 // UserAPI is handler for /user
 func UserAPI(w http.ResponseWriter, r *http.Request) {
 	user := getUserFromRequest(r)
 	if user.Role == models.NONUSER {
-		http.Error(w, "Only registered user can access.", http.StatusUnauthorized)
+		respondError(w, http.StatusUnauthorized, "Only registered user can access.")
 		return
 	}
 
-	fmt.Fprintf(w, "Hi `%v`..! Welcome to user API.", user.Name)
+	respondJSON(w, http.StatusOK, fmt.Sprintf("Hi `%v`..! Welcome to user API.", user.Name))
 }
 
 func getUserFromRequest(r *http.Request) models.User {

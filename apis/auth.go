@@ -21,12 +21,13 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 
 	user := getUserInfo(body)
 	if user.Role == models.NONUSER {
-		http.Error(w, "inavlid username/password.", http.StatusNotFound)
+		respondError(w, http.StatusNotFound, "inavlid username/password.")
 		return
 	}
 	_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
 	w.Header().Set("JWT-Token", tokenString)
 	log.Printf("[RUN]\tUser `%v` signed in.\n", user.Name)
+	respondJSON(w, http.StatusOK, user)
 }
 
 func getUserInfo(user models.SignInRequest) models.User {
