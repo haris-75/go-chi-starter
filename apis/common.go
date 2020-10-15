@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-// parseJSON gets json for request and fills the target model
-func parseJSON(r *http.Request, target interface{}) {
+// ParseJSON gets json for request and fills the target model
+func ParseJSON(r *http.Request, target interface{}) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
@@ -18,8 +18,8 @@ func parseJSON(r *http.Request, target interface{}) {
 	}
 }
 
-// respondJSON makes the response with payload as json format
-func respondJSON(w http.ResponseWriter, status int, payload interface{}) {
+// RespondJSON makes the response with payload as json format
+func RespondJSON(w http.ResponseWriter, status int, payload interface{}) {
 	response, err := json.Marshal(payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -31,7 +31,7 @@ func respondJSON(w http.ResponseWriter, status int, payload interface{}) {
 	w.Write([]byte(response))
 }
 
-// respondError makes the error response with payload as json format
-func respondError(w http.ResponseWriter, code int, message string) {
-	respondJSON(w, code, map[string]interface{}{"code": code, "message": message})
+// RespondError makes the error response with payload as json format
+func RespondError(w http.ResponseWriter, code int, message string) {
+	RespondJSON(w, code, map[string]interface{}{"code": code, "message": message})
 }

@@ -54,8 +54,22 @@ func publicRoutes(r chi.Router) {
 
 func protectedRoutes(r chi.Router) {
 	r.Use(jwtauth.Verifier(apis.TokenAuth))
-	r.Use(jwtauth.Authenticator)
+	r.Use(authenticator)
 
 	r.Get(constants.AdminAPIRoute, apis.AdminAPI)
 	r.Get(constants.UserAPIRoute, apis.UserAPI)
+}
+
+// Authenticator  middleware
+func authenticator(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, _, err := jwtauth.FromContext(r.Context())
+
+		if err != nil || token == nil || !token.Valid {
+			apis.RespondError(w, http.StatusUnauthorized, "Authorization information is missing or invalid.")
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
