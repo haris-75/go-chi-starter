@@ -42,7 +42,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\" : \"faizan\",\n\t\"password\" : \"admin\"\n}"
+							"raw": "{\n\t\"username\" : \"faizan\",\n\t\"password\" : \"faizan\"\n}"
 						},
 						"url": {
 							"raw": "{{host}}/login",
@@ -76,7 +76,7 @@
 			"response": []
 		},
 		{
-			"name": "Test",
+			"name": "Admin",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -90,12 +90,39 @@
 				],
 				"body": {},
 				"url": {
-					"raw": "{{host}}/test",
+					"raw": "{{host}}/admin",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"test"
+						"admin"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "User",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt-token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/user",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"user"
 					]
 				},
 				"description": ""

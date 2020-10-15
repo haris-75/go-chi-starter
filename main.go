@@ -33,7 +33,7 @@ func handleRequests() {
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
+		ExposedHeaders:   []string{"Content-Type", "JWT-Token"},
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
@@ -44,17 +44,32 @@ func handleRequests() {
 
 	//Run
 	fmt.Printf("[START]\tStarting server on %v\n", constants.GetAPIAddress())
-	log.Printf("[ERROR]\t%v", http.ListenAndServe(constants.GetHTTPPort(), r))
+	log.Printf("[ERROR]\t%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
 }
 
 func publicRoutes(r chi.Router) {
-	r.Get(constants.HomeAPIRoute, apis.Home)
+	r.Get(constants.HomeAPIRoute, apis.HomeAPI)
 	r.Post(constants.SignInAPIRoute, apis.SignIn)
 }
 
 func protectedRoutes(r chi.Router) {
 	r.Use(jwtauth.Verifier(apis.TokenAuth))
-	r.Use(jwtauth.Authenticator)
+	r.Use(authenticator)
 
-	r.Get(constants.TestAPIRoute, apis.Test)
+	r.Get(constants.AdminAPIRoute, apis.AdminAPI)
+	r.Get(constants.UserAPIRoute, apis.UserAPI)
+}
+
+// Authenticator  middleware
+func authenticator(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, _, err := jwtauth.FromContext(r.Context())
+
+		if err != nil || token == nil || !token.Valid {
+			apis.RespondError(w, http.StatusUnauthorized, "Authorization information is missing or invalid.")
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
