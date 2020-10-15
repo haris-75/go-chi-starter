@@ -33,7 +33,7 @@ func handleRequests() {
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Content-Type", "Jwt-Token"},
+		ExposedHeaders:   []string{"Content-Type", "JWT-Token"},
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
