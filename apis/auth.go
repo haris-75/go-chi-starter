@@ -21,7 +21,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 
 	user := getUserInfo(body)
 	if user.Role == models.NONUSER {
-		respondError(w, http.StatusNotFound, "inavlid username/password.")
+		respondError(w, http.StatusNotFound, "Invalid username or password.")
 		return
 	}
 	_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
