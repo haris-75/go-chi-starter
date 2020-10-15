@@ -19,7 +19,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	var body models.SignInRequest
 	ParseJSON(r, &body)
 
-	user := getUserInfo(body)
+	user := verifyUserInfo(body)
 	if user.Role == models.NONUSER {
 		RespondError(w, http.StatusNotFound, "Invalid username or password.")
 		return
@@ -30,7 +30,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	RespondJSON(w, http.StatusOK, user)
 }
 
-func getUserInfo(user models.SignInRequest) models.User {
+func verifyUserInfo(user models.SignInRequest) models.User {
 	switch {
 	case user.Username == "admin" && user.Password == "admin":
 		return models.User{user.Username, models.USER_ADMIN}
@@ -39,4 +39,14 @@ func getUserInfo(user models.SignInRequest) models.User {
 	default:
 		return models.User{user.Username, models.NONUSER}
 	}
+}
+
+// GetUserFromRequest gets user information from JWT-Token
+func GetUserFromRequest(r *http.Request) models.User {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	user := claims["user"].(map[string]interface{})
+	if user["name"] == nil || user["role"] == nil {
+		return models.User{"", models.NONUSER}
+	}
+	return models.User{user["name"].(string), int64(user["role"].(float64))}
 }
