@@ -1,7 +1,7 @@
 package apis
 
 import (
-	"../utils"
+	"datumbrain/my-project/utils"
 	"net/http"
 )
 

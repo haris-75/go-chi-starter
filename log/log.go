@@ -1,7 +1,7 @@
 package log
 
 import (
-	"../constants"
+	"datumbrain/my-project/constants"
 	"github.com/go-chi/chi/middleware"
 	"io"
 	"log"

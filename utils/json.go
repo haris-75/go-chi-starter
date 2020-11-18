@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"../log"
+	"datumbrain/my-project/log"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

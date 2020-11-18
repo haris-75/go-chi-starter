@@ -1,10 +1,10 @@
 package main
 
 import (
-	"./apis"
-	"./log"
-	"./models"
-	"./utils"
+	"datumbrain/my-project/apis"
+	"datumbrain/my-project/log"
+	"datumbrain/my-project/models"
+	"datumbrain/my-project/utils"
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/jwtauth"

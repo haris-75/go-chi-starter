@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./log"
+	"datumbrain/my-project/log"
 	"fmt"
 	"net/http"
 	"os"

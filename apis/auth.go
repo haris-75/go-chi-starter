@@ -1,9 +1,9 @@
 package apis
 
 import (
-	"../log"
-	"../models"
-	"../utils"
+	"datumbrain/my-project/log"
+	"datumbrain/my-project/models"
+	"datumbrain/my-project/utils"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
