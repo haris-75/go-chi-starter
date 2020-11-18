@@ -49,7 +49,7 @@ func verifyUserInfo(user models.SignInRequest) (models.User, error) {
 			Name: user.Username,
 			Role: models.USER_ADMIN,
 		}, nil
-	case user.Username == "faizan" && user.Password == "faizan":
+	case user.Username == "john" && user.Password == "doe":
 		return models.User{
 			Name: user.Username,
 			Role: models.USER_REGULAR,

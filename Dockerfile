@@ -11,7 +11,7 @@ FROM scratch
 
 COPY --from=builder /go/bin/my-project /go/bin/my-project
 
-EXPOSE 6969
+EXPOSE ${HTTP_PORT}
 
 FROM builder
 
