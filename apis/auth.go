@@ -5,6 +5,7 @@ import (
 	"../log"
 	"../models"
 	"../utils"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
 	"net/http"
@@ -24,34 +25,33 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := verifyUserInfo(body)
-	if user.Role == models.NONUSER {
-		utils.RespondCustomError(w, http.StatusNotFound, "Invalid username or password.")
+	user, err := verifyUserInfo(body)
+	if err != nil {
+		utils.RespondCustomError(w, http.StatusNotFound, err.Error())
 		return
 	}
+
 	_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
+
 	w.Header().Set("JWT-Token", tokenString)
-	log.Info.Printf("User `%v` signed in.\n", user.Name)
 	utils.RespondJson(w, http.StatusOK, user)
+
+	log.Info.Printf("User `%v` signed in.\n", user.Name)
 }
 
-func verifyUserInfo(user models.SignInRequest) models.User {
+func verifyUserInfo(user models.SignInRequest) (models.User, error) {
 	switch {
 	case user.Username == "admin" && user.Password == "admin":
-		return models.User{user.Username, models.USER_ADMIN}
+		return models.User{
+			Name: user.Username,
+			Role: models.USER_ADMIN,
+		}, nil
 	case user.Username == "faizan" && user.Password == "faizan":
-		return models.User{user.Username, models.USER_REGULAR}
+		return models.User{
+			Name: user.Username,
+			Role: models.USER_REGULAR,
+		}, nil
 	default:
-		return models.User{user.Username, models.NONUSER}
+		return models.User{}, fmt.Errorf("username or password invalid")
 	}
-}
-
-// GetUserFromRequest gets user information from JWT-Token
-func GetUserFromRequest(r *http.Request) models.User {
-	_, claims, _ := jwtauth.FromContext(r.Context())
-	user := claims["user"].(map[string]interface{})
-	if user["name"] == nil || user["role"] == nil {
-		return models.User{"", models.NONUSER}
-	}
-	return models.User{user["name"].(string), int64(user["role"].(float64))}
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"./log"
-	"github.com/go-chi/jwtauth"
 	"net/http"
 	"time"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/go-chi/cors"
 
 	"./constants"
-	"./utils"
 )
 
 func main() {
@@ -45,19 +43,4 @@ func handleRequests() {
 	//Run
 	log.Info.Printf("Starting server on %v\n", constants.GetAPIAddress())
 	log.Error.Printf("%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
-}
-
-// Authenticator  middleware
-func authenticator(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token, _, err := jwtauth.FromContext(r.Context())
-
-		if err != nil || token == nil || !token.Valid {
-			log.Warn.Println("Someone tried to access protected method without authentication.")
-			utils.RespondError(w, http.StatusUnauthorized)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
 }
