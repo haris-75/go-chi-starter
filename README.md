@@ -12,6 +12,9 @@ Project Template for Go HTTP Server using Go-Chi with JWT Authentication
 Will generate `go-chi-starter` executable
 
 ## Run
+Use `.env.sample` to create `.env` file.
+
+If you already have one, just run:
 
 ```
 ./scripts/run.sh

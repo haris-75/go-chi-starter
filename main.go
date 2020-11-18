@@ -2,14 +2,14 @@ package main
 
 import (
 	"./log"
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-
-	"./constants"
 )
 
 func main() {
@@ -41,6 +41,8 @@ func handleRequests() {
 	r.Group(publicRoutes)
 
 	//Run
-	log.Info.Printf("Starting server on %v\n", constants.GetAPIAddress())
-	log.Error.Printf("%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
+	httpPort := fmt.Sprintf(":%s", os.Getenv("HTTP_PORT"))
+
+	log.Info.Printf("Starting server on %v\n", httpPort)
+	log.Error.Println(http.ListenAndServe(httpPort, r))
 }

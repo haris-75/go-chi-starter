@@ -1,7 +1,6 @@
 package apis
 
 import (
-	"../constants"
 	"../log"
 	"../models"
 	"../utils"
@@ -9,12 +8,16 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
 	"net/http"
+	"os"
 )
 
 var TokenAuth *jwtauth.JWTAuth
 
+var signKey = []byte(os.Getenv("JWT_SIGN_KEY"))
+var verifyKey = []byte(os.Getenv("JWT_VERIFY_KEY"))
+
 func init() {
-	TokenAuth = jwtauth.New("HS256", []byte(constants.SignKey), nil)
+	TokenAuth = jwtauth.New("HS256", signKey, nil)
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
