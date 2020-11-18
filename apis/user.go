@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"../log"
 	"../models"
 	"../utils"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 func UserAPI(w http.ResponseWriter, r *http.Request) {
 	user := GetUserFromRequest(r)
 	if user.Role == models.NONUSER {
+		log.Warn.Println("Someone tried to access protected method without authentication.")
 		utils.RespondCustomError(w, http.StatusUnauthorized, "Only registered user can access.")
 		return
 	}

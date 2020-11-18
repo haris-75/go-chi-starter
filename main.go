@@ -53,6 +53,7 @@ func authenticator(next http.Handler) http.Handler {
 		token, _, err := jwtauth.FromContext(r.Context())
 
 		if err != nil || token == nil || !token.Valid {
+			log.Warn.Println("Someone tried to access protected method without authentication.")
 			utils.RespondError(w, http.StatusUnauthorized)
 			return
 		}
