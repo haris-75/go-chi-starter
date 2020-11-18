@@ -42,7 +42,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\" : \"faizan\",\n\t\"password\" : \"faizan\"\n}"
+							"raw": "{\n\t\"username\" : \"john\",\n\t\"password\" : \"doe\"\n}"
 						},
 						"url": {
 							"raw": "{{host}}/login",

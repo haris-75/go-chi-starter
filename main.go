@@ -1,18 +1,15 @@
 package main
 
 import (
+	"datumbrain/my-project/log"
 	"fmt"
-	"github.com/go-chi/jwtauth"
-	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-
-	"./apis"
-	"./constants"
 )
 
 func main() {
@@ -24,14 +21,15 @@ func handleRequests() {
 
 	// Config
 	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
+	r.Use(log.RequestLogger)
+	r.Use(log.RequestFileLogger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(30 * time.Second))
 
 	// CORS
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST"},
+		AllowedMethods:   []string{"GET", "POST", "PATCH", "DELETE"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Access-Control-Allow-Origin"},
 		ExposedHeaders:   []string{"Content-Type", "JWT-Token"},
 		AllowCredentials: false,
@@ -43,33 +41,8 @@ func handleRequests() {
 	r.Group(publicRoutes)
 
 	//Run
-	fmt.Printf("[START]\tStarting server on %v\n", constants.GetAPIAddress())
-	log.Printf("[ERROR]\t%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
-}
+	httpPort := fmt.Sprintf(":%s", os.Getenv("HTTP_PORT"))
 
-func publicRoutes(r chi.Router) {
-	r.Get(constants.HomeAPIRoute, apis.HomeAPI)
-	r.Post(constants.SignInAPIRoute, apis.SignIn)
-}
-
-func protectedRoutes(r chi.Router) {
-	r.Use(jwtauth.Verifier(apis.TokenAuth))
-	r.Use(authenticator)
-
-	r.Get(constants.AdminAPIRoute, apis.AdminAPI)
-	r.Get(constants.UserAPIRoute, apis.UserAPI)
-}
-
-// Authenticator  middleware
-func authenticator(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token, _, err := jwtauth.FromContext(r.Context())
-
-		if err != nil || token == nil || !token.Valid {
-			apis.RespondError(w, http.StatusUnauthorized, "Authorization information is missing or invalid.")
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
+	log.Info.Printf("Starting server on %v\n", httpPort)
+	log.Error.Println(http.ListenAndServe(httpPort, r))
 }

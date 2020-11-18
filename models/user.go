@@ -9,5 +9,4 @@ type User struct {
 const (
 	USER_ADMIN = iota
 	USER_REGULAR
-	NONUSER
 )
