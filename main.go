@@ -23,7 +23,8 @@ func handleRequests() {
 
 	// Config
 	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
+	r.Use(log.RequestLogger)
+	r.Use(log.RequestFileLogger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(30 * time.Second))
 
