@@ -5,7 +5,7 @@ import (
 	"../models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
-	"log"
+	"../logging"
 	"net/http"
 )
 
@@ -26,7 +26,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 	_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
 	w.Header().Set("JWT-Token", tokenString)
-	log.Printf("[RUN]\tUser `%v` signed in.\n", user.Name)
+	logging.Info.Printf("User `%v` signed in.\n", user.Name)
 	RespondJSON(w, http.StatusOK, user)
 }
 
