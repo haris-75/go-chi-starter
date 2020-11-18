@@ -2,6 +2,7 @@ package apis
 
 import (
 	"../models"
+	"../utils"
 	"fmt"
 	"net/http"
 )
@@ -10,9 +11,9 @@ import (
 func UserAPI(w http.ResponseWriter, r *http.Request) {
 	user := GetUserFromRequest(r)
 	if user.Role == models.NONUSER {
-		RespondError(w, http.StatusUnauthorized, "Only registered user can access.")
+		utils.RespondCustomError(w, http.StatusUnauthorized, "Only registered user can access.")
 		return
 	}
 
-	RespondJSON(w, http.StatusOK, fmt.Sprintf("Hi `%v`..! Welcome to user API.", user.Name))
+	utils.RespondJson(w, http.StatusOK, fmt.Sprintf("Hi `%v`..! Welcome to user API.", user.Name))
 }

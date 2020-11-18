@@ -10,8 +10,8 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 
-	"./apis"
 	"./constants"
+	"./utils"
 )
 
 func main() {
@@ -53,7 +53,7 @@ func authenticator(next http.Handler) http.Handler {
 		token, _, err := jwtauth.FromContext(r.Context())
 
 		if err != nil || token == nil || !token.Valid {
-			apis.RespondError(w, http.StatusUnauthorized, "Authorization information is missing or invalid.")
+			utils.RespondError(w, http.StatusUnauthorized)
 			return
 		}
 

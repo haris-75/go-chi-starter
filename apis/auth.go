@@ -4,6 +4,7 @@ import (
 	"../constants"
 	"../log"
 	"../models"
+	"../utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
 	"net/http"
@@ -17,17 +18,21 @@ func init() {
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	var body models.SignInRequest
-	ParseJSON(r, &body)
+	if err := utils.ParseJson(r, &body); err != nil {
+		log.Error.Println(err)
+		utils.RespondError(w, http.StatusBadRequest)
+		return
+	}
 
 	user := verifyUserInfo(body)
 	if user.Role == models.NONUSER {
-		RespondError(w, http.StatusNotFound, "Invalid username or password.")
+		utils.RespondCustomError(w, http.StatusNotFound, "Invalid username or password.")
 		return
 	}
 	_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
 	w.Header().Set("JWT-Token", tokenString)
 	log.Info.Printf("User `%v` signed in.\n", user.Name)
-	RespondJSON(w, http.StatusOK, user)
+	utils.RespondJson(w, http.StatusOK, user)
 }
 
 func verifyUserInfo(user models.SignInRequest) models.User {
