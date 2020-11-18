@@ -47,19 +47,6 @@ func handleRequests() {
 	log.Printf("[ERROR]\t%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
 }
 
-func publicRoutes(r chi.Router) {
-	r.Get(constants.HomeAPIRoute, apis.HomeAPI)
-	r.Post(constants.SignInAPIRoute, apis.SignIn)
-}
-
-func protectedRoutes(r chi.Router) {
-	r.Use(jwtauth.Verifier(apis.TokenAuth))
-	r.Use(authenticator)
-
-	r.Get(constants.AdminAPIRoute, apis.AdminAPI)
-	r.Get(constants.UserAPIRoute, apis.UserAPI)
-}
-
 // Authenticator  middleware
 func authenticator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

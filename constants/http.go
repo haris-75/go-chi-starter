@@ -8,18 +8,6 @@ const (
 	// httpPort is HTTP port
 	httpPort = "3636"
 	httpHost = "localhost"
-
-	// HomeAPIRoute is route for GET /
-	HomeAPIRoute = "/"
-
-	// AdminAPIRoute is route for POST /admin
-	AdminAPIRoute = "/admin"
-
-	// UserAPIRoute is route for POST /user
-	UserAPIRoute = "/user"
-
-	// SignInAPIRoute is route for POST /login
-	SignInAPIRoute = "/login"
 )
 
 // GetHTTPPort will return HTTP port with prefix ":"
