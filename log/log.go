@@ -1,4 +1,4 @@
-package logging
+package log
 
 import (
 	"../constants"
@@ -37,7 +37,7 @@ func RequestLogger(next http.Handler) http.Handler {
 	return getLogHttpHandler(next, os.Stdout, constants.NoColorLogs)
 }
 
-// RequestFileLogger middleware for logging info to file
+// RequestFileLogger middleware for log info to file
 func RequestFileLogger(next http.Handler) http.Handler {
 	return getLogHttpHandler(next, fileWriter, true)
 }

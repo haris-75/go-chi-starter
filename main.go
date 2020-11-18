@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./logging"
+	"./log"
 	"github.com/go-chi/jwtauth"
 	"net/http"
 	"time"
@@ -42,8 +42,8 @@ func handleRequests() {
 	r.Group(publicRoutes)
 
 	//Run
-	logging.Info.Printf("Starting server on %v\n", constants.GetAPIAddress())
-	logging.Error.Printf("%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
+	log.Info.Printf("Starting server on %v\n", constants.GetAPIAddress())
+	log.Error.Printf("%v\n", http.ListenAndServe(constants.GetHTTPPort(), r))
 }
 
 // Authenticator  middleware

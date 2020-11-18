@@ -2,10 +2,10 @@ package apis
 
 import (
 	"../constants"
+	"../log"
 	"../models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/jwtauth"
-	"../logging"
 	"net/http"
 )
 
@@ -26,7 +26,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 	_, tokenString, _ := TokenAuth.Encode(jwt.MapClaims{"user": user})
 	w.Header().Set("JWT-Token", tokenString)
-	logging.Info.Printf("User `%v` signed in.\n", user.Name)
+	log.Info.Printf("User `%v` signed in.\n", user.Name)
 	RespondJSON(w, http.StatusOK, user)
 }
 

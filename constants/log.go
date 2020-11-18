@@ -1,7 +1,7 @@
 package constants
 
 const (
-	// MaxLogCharacters is used for logging
+	// MaxLogCharacters is used for log
 	MaxLogCharacters = 60
 
 	// NoColorLogs is used for styling logs
