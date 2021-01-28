@@ -1,29 +1,40 @@
 package apis
 
 import (
-	"datumbrain/my-project/log"
+	logger "datumbrain/my-project/log"
 	"datumbrain/my-project/models"
 	"datumbrain/my-project/utils"
+	"errors"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/go-chi/jwtauth"
+	"log"
 	"net/http"
 	"os"
+
+	"github.com/casbin/casbin"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/go-chi/jwtauth"
 )
 
 var TokenAuth *jwtauth.JWTAuth
+var authEnforcer *casbin.Enforcer
 
 var signKey = []byte(os.Getenv("JWT_SIGN_KEY"))
 var verifyKey = []byte(os.Getenv("JWT_VERIFY_KEY"))
 
 func init() {
 	TokenAuth = jwtauth.New("HS256", signKey, nil)
+	var err error
+	authEnforcer, err = casbin.NewEnforcerSafe("./config/model.conf", "./config/policy.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
 
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	var body models.SignInRequest
 	if err := utils.ParseJson(r, &body); err != nil {
-		log.Error.Println(err)
+		logger.Error.Println(err)
 		utils.RespondError(w, http.StatusBadRequest)
 		return
 	}
@@ -39,7 +50,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("JWT-Token", tokenString)
 	utils.RespondJson(w, http.StatusOK, user)
 
-	log.Info.Printf("User `%v` signed in.\n", user.Name)
+	logger.Info.Printf("User `%v` signed in.\n", user.Name)
 }
 
 func verifyUserInfo(user models.SignInRequest) (models.User, error) {
@@ -62,46 +73,42 @@ func verifyUserInfo(user models.SignInRequest) (models.User, error) {
 // JWT Auth
 
 // AdminAuthenticator checks if request is from an admin user
-func AdminAuthenticator(next http.Handler) http.Handler {
+func Authenticator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		user, err := getUserFromRequest(r)
 		if err != nil {
-			log.Warn.Println("Someone tried to access protected method without authentication.")
+			logger.Warn.Println("Someone tried to access protected method without authentication.")
 			utils.RespondCustomError(w, http.StatusUnauthorized, "Authorization information missing/invalid.")
 			return
 		}
 
-		if user.Role != models.USER_ADMIN {
-			log.Warn.Printf("`%v` tried to access protected method.\n", user.Name)
-			utils.RespondCustomError(w, http.StatusUnauthorized, "Only admin can access.")
+		res, err := authEnforcer.EnforceSafe(user.Role, r.URL.Path, r.Method)
+		if err != nil {
+			writeError(http.StatusInternalServerError, "ERROR", w, err)
 			return
+		}
+		if res == false {
+			writeError(http.StatusForbidden, "FORBIDDEN", w, errors.New("user does not exist"))
+			return			
 		}
 
 		next.ServeHTTP(w, r)
+
 	})
 }
 
-// UserAuthenticator checks if request is from an valid user
-func UserAuthenticator(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		_, err := getUserFromRequest(r)
-		if err != nil {
-			log.Warn.Println("Someone tried to access protected method without authentication.")
-			utils.RespondCustomError(w, http.StatusUnauthorized, "Authorization information missing/invalid.")
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
+func writeError(status int, message string, w http.ResponseWriter, err error) {
+	log.Print("ERROR: ", err.Error())
+	w.WriteHeader(status)
+	w.Write([]byte(message))
 }
 
 func getUserFromRequest(r *http.Request) (models.User, error) {
 	token, claims, err := jwtauth.FromContext(r.Context())
 
 	if err != nil || token == nil || !token.Valid {
-		log.Error.Printf("%v\n", err)
+		logger.Error.Printf("%v\n", err)
 		return models.User{}, fmt.Errorf("Authorization information missing/invalid.")
 	}
 

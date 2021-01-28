@@ -2,6 +2,7 @@ package main
 
 import (
 	"datumbrain/my-project/apis"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/jwtauth"
 )
@@ -18,13 +19,11 @@ func protectedRoutes(r chi.Router) {
 }
 
 func adminRoutes(r chi.Router) {
-	r.Use(apis.AdminAuthenticator)
-
+	r.Use(apis.Authenticator)
 	r.Get("/admin", apis.AdminAPI)
 }
 
 func userRoutes(r chi.Router) {
-	r.Use(apis.UserAuthenticator)
-
+	r.Use(apis.Authenticator)
 	r.Get("/user", apis.UserAPI)
 }

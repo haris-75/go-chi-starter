@@ -11,6 +11,7 @@ replace (
 )
 
 require (
+	github.com/casbin/casbin v1.9.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi v1.5.0
 	github.com/go-chi/cors v1.1.1
